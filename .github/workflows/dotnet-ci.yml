@@ -1,0 +1,121 @@
+name: .NET CI
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+    branches:
+      - main
+      - master
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Restore dependencies
+        run: dotnet restore BlackJack.slnx
+
+      - name: Build
+        run: dotnet build BlackJack.slnx --configuration Release --no-restore
+
+  test:
+    name: Automated Tests
+    runs-on: windows-latest
+    needs: build
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Restore dependencies
+        run: dotnet restore BlackJack.slnx
+
+      - name: Run tests
+        run: dotnet test BlackJack.slnx --configuration Release --no-restore --logger "trx;LogFileName=test-results.trx"
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: "**/TestResults/*.trx"
+          if-no-files-found: ignore
+
+  code-quality:
+    name: Code Quality
+    runs-on: windows-latest
+    needs: build
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Restore dependencies
+        run: dotnet restore BlackJack.slnx
+
+      - name: Run static analysis
+        run: >
+          dotnet build BlackJack.slnx
+          --configuration Release
+          --no-restore
+          -warnaserror
+          -p:EnableNETAnalyzers=true
+
+  formatting:
+    name: Formatting Check
+    runs-on: windows-latest
+    needs: build
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Restore dependencies
+        run: dotnet restore BlackJack.slnx
+
+      - name: Check formatting
+        run: dotnet format BlackJack.slnx --verify-no-changes --verbosity diagnostic
+
+  pull-request-validation:
+    name: Pull Request Validation
+    runs-on: windows-latest
+    if: github.event_name == 'pull_request'
+    needs:
+      - build
+      - test
+      - code-quality
+      - formatting
+
+    steps:
+      - name: Mark pull request as validated
+        run: echo "Build, tests, code quality, and formatting checks passed."
