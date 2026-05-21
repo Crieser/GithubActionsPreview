@@ -1,0 +1,49 @@
+﻿<Window x:Class="BlackJack.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="BLACKJACK.exe"
+        Height="500"
+        Width="900"
+        Background="black"
+        WindowStartupLocation="CenterScreen">
+
+    <Grid>
+
+        <StackPanel HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Width="300">
+
+            <TextBlock Text="BLACKJACK.exe"
+                       FontSize="30"
+                       FontWeight="Bold"
+                       Foreground="White"
+                       HorizontalAlignment="Center"
+                       Margin="0,0,0,40"/>
+
+            <TextBlock Text="Guthaben: 1.000,00€"
+                       FontSize="22"
+                       Foreground="LightGreen"
+                       HorizontalAlignment="Center"
+                       Margin="0,0,0,30"/>
+
+            <Button Content="Spiel Starten"
+                    Height="45"
+                    Margin="0,0,0,15"
+                    FontSize="16"
+                    Click="StartGame_Click"/>
+
+            <Button Content="Statistik"
+                    Height="45"
+                    Margin="0,0,0,15"
+                    FontSize="16"/>
+
+            <Button Content="Logout"
+                    Height="45"
+                    FontSize="16"
+                    Click="Logout_Click"/>
+
+        </StackPanel>
+
+    </Grid>
+
+</Window>

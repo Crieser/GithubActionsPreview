@@ -1,0 +1,79 @@
+﻿<Window x:Class="BlackJack.Views.BlackjackView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="BLACKJACK TABLE"
+        Height="600"
+        Width="1000"
+        Background="DarkGreen"
+        WindowStartupLocation="CenterScreen">
+
+    <Grid>
+
+        <StackPanel HorizontalAlignment="Center"
+                    VerticalAlignment="Top"
+                    Margin="0,40,0,0">
+
+            <TextBlock Text="Dealer 'xxx'"
+                       FontSize="28"
+                       FontWeight="Bold"
+                       Foreground="White"
+                       HorizontalAlignment="Center"/>
+
+            <TextBlock x:Name="DealerCardsText"
+                       Text="Karten: ? ?"
+                       FontSize="24"
+                       Foreground="White"
+                       Margin="0,20,0,0"
+                       HorizontalAlignment="Center"/>
+
+        </StackPanel>
+
+        <StackPanel HorizontalAlignment="Center"
+                    VerticalAlignment="Center">
+
+            <TextBlock Text="Spieler 'xxx'"
+                       FontSize="28"
+                       FontWeight="Bold"
+                       Foreground="White"
+                       HorizontalAlignment="Center"/>
+
+            <TextBlock x:Name="PlayerCardsText"
+                       Text="Karten: Ass König"
+                       FontSize="24"
+                       Foreground="White"
+                       Margin="0,20,0,0"
+                       HorizontalAlignment="Center"/>
+
+        </StackPanel>
+
+        <StackPanel Orientation="Horizontal"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Bottom"
+                    Margin="0,0,0,40">
+
+            <Button Content="Hit"
+                    Width="120"
+                    Height="50"
+                    Margin="10"
+                    FontSize="18"
+                    Click="Hit_Click"/>
+
+            <Button Content="Stand"
+                    Width="120"
+                    Height="50"
+                    Margin="10"
+                    FontSize="18"
+                    Click="Stand_Click"/>
+
+            <Button Content="Back"
+                    Width="120"
+                    Height="50"
+                    Margin="10"
+                    FontSize="18"
+                    Click="Back_Click"/>
+
+        </StackPanel>
+
+    </Grid>
+
+</Window>
