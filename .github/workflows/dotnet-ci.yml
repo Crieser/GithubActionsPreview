@@ -1,5 +1,8 @@
 name: .NET CI
 
+# Dieser Workflow zeigt eine typische Continuous-Integration-Pipeline:
+# Bei jedem Push oder Pull Request wird das Projekt automatisch gebaut,
+# getestet und auf einfache Qualitätsregeln geprüft.
 on:
   push:
     branches:
@@ -11,31 +14,40 @@ on:
       - master
 
 permissions:
+  # Der Workflow muss den Quellcode nur lesen. Weniger Rechte sind sicherer
+  # und reichen für Build, Tests und Analyse aus.
   contents: read
 
 jobs:
   build:
     name: Build
+    # WPF-Projekte benötigen Windows, deshalb wird ein Windows-Runner genutzt.
     runs-on: windows-latest
 
     steps:
       - name: Checkout repository
+        # Holt den Repository-Inhalt auf den GitHub-Runner.
         uses: actions/checkout@v4
 
       - name: Setup .NET SDK
+        # Installiert die .NET-Version, mit der die Lösung gebaut werden soll.
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 10.0.x
 
       - name: Restore dependencies
+        # Lädt alle NuGet-Pakete, bevor gebaut wird.
         run: dotnet restore BlackJack.slnx
 
       - name: Build
+        # Baut die Lösung im Release-Modus. --no-restore spart Zeit,
+        # weil Restore im vorherigen Schritt bereits ausgeführt wurde.
         run: dotnet build BlackJack.slnx --configuration Release --no-restore
 
   test:
     name: Automated Tests
     runs-on: windows-latest
+    # Der Test-Job startet erst, wenn der Build erfolgreich war.
     needs: build
 
     steps:
@@ -51,9 +63,12 @@ jobs:
         run: dotnet restore BlackJack.slnx
 
       - name: Run tests
+        # Führt alle Tests aus und schreibt das Ergebnis als TRX-Datei.
         run: dotnet test BlackJack.slnx --configuration Release --no-restore --logger "trx;LogFileName=test-results.trx"
 
       - name: Upload test results
+        # always() sorgt dafür, dass Testergebnisse auch bei fehlschlagenden
+        # Tests hochgeladen werden. Das hilft bei der Fehlersuche.
         if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -64,6 +79,7 @@ jobs:
   code-quality:
     name: Code Quality
     runs-on: windows-latest
+    # Auch diese Prüfung soll nur laufen, wenn das Projekt grundsätzlich baut.
     needs: build
 
     steps:
@@ -79,6 +95,8 @@ jobs:
         run: dotnet restore BlackJack.slnx
 
       - name: Run static analysis
+        # Behandelt Compiler-Warnungen als Fehler. So sieht man in GitHub
+        # Actions sofort, wenn neuer Code Warnungen erzeugt.
         run: >
           dotnet build BlackJack.slnx
           --configuration Release
@@ -89,6 +107,8 @@ jobs:
   formatting:
     name: Formatting Check
     runs-on: windows-latest
+    # Der Format-Check ist ein eigener Job, damit man in GitHub getrennt sieht,
+    # ob Build, Tests oder Formatierung fehlgeschlagen sind.
     needs: build
 
     steps:
@@ -104,12 +124,16 @@ jobs:
         run: dotnet restore BlackJack.slnx
 
       - name: Check formatting
+        # Prüft, ob der Code nach den .NET-Formatierungsregeln formatiert ist.
+        # --verify-no-changes macht daraus eine reine Kontrolle ohne Dateien zu ändern.
         run: dotnet format BlackJack.slnx --verify-no-changes --verbosity diagnostic
 
   pull-request-validation:
     name: Pull Request Validation
     runs-on: windows-latest
+    # Dieser Job ist nur für Pull Requests relevant.
     if: github.event_name == 'pull_request'
+    # Alle vorherigen Qualitätsstufen müssen erfolgreich sein.
     needs:
       - build
       - test

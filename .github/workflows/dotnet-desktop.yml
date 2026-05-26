@@ -1,12 +1,17 @@
 name: WPF Build Pipeline
 
+# Dieser Workflow ist ein kompaktes Beispiel für eine Desktop-Build-Pipeline:
+# Quellcode holen, SDK einrichten, Abhängigkeiten cachen, bauen, testen,
+# veröffentlichen und das Ergebnis als Artefakt speichern.
 on:
   push:
+    # Der Workflow startet bei Pushes auf diese Branches.
     branches:
       - main
       - develop
 
   pull_request:
+    # Pull Requests gegen diese Branches werden ebenfalls geprüft.
     branches:
       - main
       - develop
@@ -15,38 +20,49 @@ jobs:
 
   build:
 
+    # WPF läuft unter Windows, deshalb wird hier ein Windows-Runner verwendet.
     runs-on: windows-latest
 
     steps:
 
       - name: Checkout
+        # actions/checkout macht den Repository-Code im Runner verfügbar.
         uses: actions/checkout@v4
 
       - name: Setup .NET
+        # Richtet das .NET SDK ein, damit dotnet restore/build/test laufen kann.
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 8.0.x
+          dotnet-version: 10.0.x
 
       - name: Cache NuGet
+        # Speichert NuGet-Pakete zwischen Workflow-Läufen.
+        # Dadurch werden spätere Builds oft schneller.
         uses: actions/cache@v4
         with:
           path: ~/.nuget/packages
           key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
 
       - name: Restore
+        # Lädt alle Paketabhängigkeiten aus den Projektdateien.
         run: dotnet restore
 
       - name: Build
+        # Baut die Anwendung im Release-Modus. --no-restore nutzt den Restore-Schritt.
         run: dotnet build --configuration Release --no-restore
 
       - name: Test
+        # Führt die Tests aus. continue-on-error zeigt, dass ein Workflow
+        # trotz Testfehlern weiterlaufen kann, z. B. um trotzdem Artefakte zu erzeugen.
         run: dotnet test --configuration Release --no-build
         continue-on-error: true
 
       - name: Publish
+        # Erstellt eine veröffentlichbare Ausgabe der Anwendung.
         run: dotnet publish --configuration Release --output publish
 
       - name: Upload Artifact
+        # Speichert den Publish-Ordner als herunterladbares Build-Artefakt in GitHub.
         uses: actions/upload-artifact@v4
         with:
           name: WPF-Build

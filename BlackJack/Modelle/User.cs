@@ -1,5 +1,7 @@
 ﻿namespace BlackJack.Modelle
 {
+    // Kleine Modellklasse für die Tests: An ihr lässt sich gut zeigen,
+    // dass GitHub Actions nach jedem Push automatisch fachliche Regeln prüfen kann.
     public class User
     {
         public int Id { get; set; }

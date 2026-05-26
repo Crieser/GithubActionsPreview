@@ -1,14 +1,17 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <!-- Das Testprojekt nutzt dasselbe Zielframework wie die WPF-Anwendung. -->
     <TargetFramework>net10.0-windows</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <!-- Diese Eigenschaften markieren das Projekt eindeutig als Testprojekt für dotnet test. -->
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
   </PropertyGroup>
 
   <ItemGroup>
+    <!-- Test-SDK und xUnit stellen die Infrastruktur für automatisierte Tests bereit. -->
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.1" />
     <PackageReference Include="xunit" Version="2.9.3" />
     <PackageReference Include="xunit.runner.visualstudio" Version="3.1.5">
@@ -18,6 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <!-- Durch die Referenz kann das Testprojekt Klassen aus der Anwendung prüfen. -->
     <ProjectReference Include="..\BlackJack\BlackJack.csproj" />
   </ItemGroup>
 

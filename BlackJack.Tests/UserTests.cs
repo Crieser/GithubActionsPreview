@@ -1,4 +1,4 @@
-using BlackJack.Modelle;
+﻿using BlackJack.Modelle;
 using Xunit;
 
 namespace BlackJack.Tests;
@@ -8,6 +8,8 @@ public class UserTests
     [Fact]
     public void NewUser_ShouldStartWithDefaultValues()
     {
+        // Dieser Test ist ein einfaches Beispiel für GitHub Actions:
+        // In der Pipeline wird er automatisch mit "dotnet test" ausgeführt.
         User user = new();
 
         Assert.Equal(0, user.Id);
@@ -39,6 +41,8 @@ public class UserTests
     [InlineData(1250.50, -250.50, 1000)]
     public void Balance_ShouldReflectGameResults(decimal startingBalance, decimal gameResult, decimal expectedBalance)
     {
+        // [Theory] prüft dieselbe Logik mit mehreren Datensätzen.
+        // Das ist praktisch, weil CI-Systeme viele Fälle automatisch abarbeiten können.
         User user = new()
         {
             Balance = startingBalance,

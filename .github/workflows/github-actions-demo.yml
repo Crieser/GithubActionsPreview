@@ -1,18 +1,24 @@
 name: GitHub Actions Demo
+# Minimaler Demo-Workflow: Er läuft bei jedem Push und gibt wichtige
+# GitHub-Actions-Kontexte im Log aus.
 run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
 on: [push]
 jobs:
   Explore-GitHub-Actions:
+    # ubuntu-latest ist ein von GitHub bereitgestellter Linux-Runner.
     runs-on: ubuntu-latest
     steps:
+      # Die folgenden echo-Befehle zeigen Werte aus dem github-, runner- und job-Kontext.
       - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
       - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
       - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
       - name: Check out repository code
+        # Ohne Checkout wären die Projektdateien nicht im Runner vorhanden.
         uses: actions/checkout@v6
       - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
       - run: echo "🖥️ The workflow is now ready to test your code on the runner."
       - name: List files in the repository
+        # Mehrzeilige run-Blöcke eignen sich für mehrere Shell-Befehle.
         run: |
           ls ${{ github.workspace }}
       - run: echo "🍏 This job's status is ${{ job.status }}."
