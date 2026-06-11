@@ -12,6 +12,7 @@ namespace BlackJack.Views
         private async void Hit_Click(object sender, RoutedEventArgs e)
         {
             MessageBox.Show("Karte gezogen!");
+            return 50;
         }
 
         private async void Stand_Click(object sender, RoutedEventArgs e)
